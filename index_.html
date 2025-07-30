@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Properties Checker</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #3a4a6d;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input[type="number"]:focus {
+            border-color: #5c7cfa;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(92, 124, 250, 0.3);
+        }
+
+        button {
+            background-color: #5c7cfa;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 25px;
+        }
+
+        button:hover {
+            background-color: #4c6ef5;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            background-color: #f8f9fb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .result-title {
+            color: #3a4a6d;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .result-value {
+            color: #495057;
+            font-size: 1.1rem;
+        }
+
+        .property {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .property-icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+        }
+
+        .property.even .property-icon {
+            background-color: #51cf66;
+        }
+
+        .property.odd .property-icon {
+            background-color: #f03e3e;
+        }
+
+        .property.prime .property-icon {
+            background-color: #2f9e44;
+        }
+
+        .property-value {
+            font-weight: 500;
+        }
+
+        .helper-text {
+            color: #868e96;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .animation {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Number Properties Checker</h1>
+        
+        <div class="input-group">
+            <input type="number" id="numberInput" placeholder="Enter any integer (positive or negative)" min="-999999999" max="999999999">
+            <p class="helper-text">Try numbers like 2, 7, or -5</p>
+        </div>
+        
+        <button id="checkBtn">Check Properties</button>
+        
+        <div id="resultContainer" class="result" style="display: none;">
+            <h2 class="result-title">Number Analysis</h2>
+            <div id="resultContent">
+                <!-- Results will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const numberInput = document.getElementById('numberInput');
+            const checkBtn = document.getElementById('checkBtn');
+            const resultContainer = document.getElementById('resultContainer');
+            const resultContent = document.getElementById('resultContent');
+
+            // Function to check if a number is prime
+            function isPrime(num) {
+                if (num <= 1) return false;
+                if (num <= 3) return true;
+                
+                if (num % 2 === 0 || num % 3 === 0) return false;
+                
+                for (let i = 5; i * i <= num; i += 6) {
+                    if (num % i === 0 || num % (i + 2) === 0) return false;
+                }
+                
+                return true;
+            }
+
+            // Function to check the number properties
+            function checkNumberProperties() {
+                const inputValue = numberInput.value.trim();
+                const number = parseInt(inputValue, 10);
+                
+                if (inputValue === '' || isNaN(number)) {
+                    alert('Please enter a valid integer');
+                    return;
+                }
+
+                // Clear previous results
+                resultContent.innerHTML = '';
+                
+                // Determine properties
+                const isEven = number % 2 === 0;
+                const isOdd = !isEven;
+                const primeCheck = isPrime(Math.abs(number));
+                
+                // Create result elements
+                const evenDiv = document.createElement('div');
+                evenDiv.className = 'property even animation';
+                evenDiv.innerHTML = `
+                    <div class="property-icon">E</div>
+                    <div class="property-value">Even: ${isEven ? 'Yes' : 'No'}</div>
+                `;
+                
+                const oddDiv = document.createElement('div');
+                oddDiv.className = 'property odd animation';
+                oddDiv.style.animationDelay = '0.15s';
+                oddDiv.innerHTML = `
+                    <div class="property-icon">O</div>
+                    <div class="property-value">Odd: ${isOdd ? 'Yes' : 'No'}</div>
+                `;
+                
+                const primeDiv = document.createElement('div');
+                primeDiv.className = `property prime animation`;
+                primeDiv.style.animationDelay = '0.3s';
+                primeDiv.innerHTML = `
+                    <div class="property-icon">P</div>
+                    <div class="property-value">Prime: ${primeCheck ? 'Yes' : 'No'}</div>
+                `;
+                
+                // Append to results
+                resultContent.appendChild(evenDiv);
+                resultContent.appendChild(oddDiv);
+                resultContent.appendChild(primeDiv);
+                
+                // Show results
+                resultContainer.style.display = 'block';
+            }
+
+            // Event listeners
+            checkBtn.addEventListener('click', checkNumberProperties);
+            
+            numberInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkNumberProperties();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
